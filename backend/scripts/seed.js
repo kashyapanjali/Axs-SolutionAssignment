@@ -127,11 +127,11 @@ const seedData = async () => {
     const createdAdmins = await AdminUser.insertMany(adminUsers);
     console.log(`✓ Created ${createdAdmins.length} admin users`);
 
-    console.log('\n✅ Seed data created successfully!');
+    console.log('\n Seed data created successfully!');
     console.log('\nDefault Admin Credentials:');
     console.log('Email: admin@store.com');
     console.log('Password: admin123');
-    console.log('\n📦 Products created across categories:');
+    console.log('\n Products created across categories:');
     const categories = [...new Set(products.map(p => p.category))];
     categories.forEach(cat => {
       const count = products.filter(p => p.category === cat).length;
@@ -140,7 +140,7 @@ const seedData = async () => {
 
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error seeding data:', error);
+    console.error(' Error seeding data:', error);
     process.exit(1);
   }
 };
