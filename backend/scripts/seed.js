@@ -14,7 +14,7 @@ const products = [
     stock: 50,
     category: 'Electronics',
     status: 'Active',
-    imageUrl: ''
+    imageUrl: 'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcRjSLzJXMlr2rcnZ3z5UdwfHquUNj1BNV61rHxTc17o0jua7dePGiCYJY7qps6gEVz0_-JZ1XiRM-szavbpYyTYj16kjFxLOTHwjzGy2Ct0TrOpSdzA08Lfzg'
   },
   {
     name: 'Smart Watch Pro',
@@ -23,7 +23,7 @@ const products = [
     stock: 30,
     category: 'Electronics',
     status: 'Active',
-    imageUrl: ''
+    imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30'
   },
   {
     name: 'Cotton T-Shirt',
@@ -32,7 +32,7 @@ const products = [
     stock: 100,
     category: 'Clothing',
     status: 'Active',
-    imageUrl: ''
+    imageUrl: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820'
   },
   {
     name: 'Denim Jeans',
@@ -41,7 +41,7 @@ const products = [
     stock: 75,
     category: 'Clothing',
     status: 'Active',
-    imageUrl: ''
+    imageUrl: 'https://images.unsplash.com/photo-1542272604-787c3835535d'
   },
   {
     name: 'Running Shoes',
@@ -50,7 +50,7 @@ const products = [
     stock: 60,
     category: 'Footwear',
     status: 'Active',
-    imageUrl: ''
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSytJoEeiGXyu7EtCU-F9c5e6Bm5PsP_FQtA3QTgm46BwZZWqgqmyDLIe1AR2OchaOu06h2Tqe4YjmU0cDvAzHJ4_sXUsNFS5JrLZDBTLo5R11jIHXxiQ5nx08'
   },
   {
     name: 'Leather Wallet',
@@ -59,7 +59,7 @@ const products = [
     stock: 45,
     category: 'Accessories',
     status: 'Active',
-    imageUrl: ''
+    imageUrl: 'https://images.unsplash.com/photo-1627123424574-724758594e93'
   },
   {
     name: 'Coffee Maker',
@@ -68,7 +68,7 @@ const products = [
     stock: 25,
     category: 'Home & Kitchen',
     status: 'Active',
-    imageUrl: ''
+    imageUrl: 'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQhe7zPIvLjPtZ_r6YHomulOpFg4B9YNz3NVV1xVL-w4hIU4NkycMMlkao9X0u5rwPJ7Z2olzdNMwEHosLtwsUGZXq5fD1J3gz17ozkefEu7Wpd3JtpHlHN02p89GNL8l3-IzB4HqM&usqp=CAc'
   },
   {
     name: 'Yoga Mat',
@@ -77,7 +77,7 @@ const products = [
     stock: 40,
     category: 'Sports & Fitness',
     status: 'Active',
-    imageUrl: ''
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQ9jdpPjJaPhnojCHJb9PGG2V2Kqzfnjr5Zl_mrXGRImg1i2arbegS8GpfH3iL8g9unt99hMXUihj5sKPA17LRwiyUIeU4U_6Z3BpsheEyyulyxtpdIeiSS3A'
   },
   {
     name: 'Backpack',
@@ -86,7 +86,7 @@ const products = [
     stock: 35,
     category: 'Accessories',
     status: 'Active',
-    imageUrl: ''
+    imageUrl: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62'
   },
   {
     name: 'Wireless Mouse',
@@ -95,10 +95,11 @@ const products = [
     stock: 80,
     category: 'Electronics',
     status: 'Active',
-    imageUrl: ''
+    imageUrl: 'https://assets.ajio.com/medias/sys_master/root/20250530/FUO5/6839af567a6cd4182f6db2fa/-1117Wx1400H-4944216760-multi-MODEL.jpg'
   }
 ];
 
+//admin user credentials
 const adminUsers = [
   {
     email: 'admin@store.com',
@@ -109,7 +110,7 @@ const adminUsers = [
 
 const seedData = async () => {
   try {
-    // Connect to database
+    // Connect to the database
     await connectDB();
 
     // Clear existing data
@@ -122,16 +123,20 @@ const seedData = async () => {
     const createdProducts = await Product.insertMany(products);
     console.log(`✓ Created ${createdProducts.length} products`);
 
-    // Insert admin users
+    // Insert admin users (need to save individually to trigger password hashing)
     console.log('Seeding admin users...');
-    const createdAdmins = await AdminUser.insertMany(adminUsers);
-    console.log(`✓ Created ${createdAdmins.length} admin users`);
+    for (const adminData of adminUsers) {
+      const admin = new AdminUser(adminData);
+      await admin.save();
+    }
+    console.log(`✓ Created ${adminUsers.length} admin users`);
 
-    console.log('\n Seed data created successfully!');
-    console.log('\nDefault Admin Credentials:');
-    console.log('Email: admin@store.com');
-    console.log('Password: admin123');
-    console.log('\n Products created across categories:');
+    // console.log('\n Seed data created successfully!');
+    // console.log('\nDefault Admin Credentials:');
+    // console.log('Email: admin@store.com');
+    // console.log('Password: admin123');
+    // console.log('\n Products created across categories:');
+
     const categories = [...new Set(products.map(p => p.category))];
     categories.forEach(cat => {
       const count = products.filter(p => p.category === cat).length;
