@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { orderAPI } from '../../services/api';
 import './OrderSuccess.css';
@@ -8,11 +8,8 @@ const OrderSuccess = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchOrder();
-  }, [orderId]);
 
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     try {
       const response = await orderAPI.getOrder(orderId);
       setOrder(response.data.order);
@@ -21,7 +18,11 @@ const OrderSuccess = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [orderId]);
+
+  useEffect(() => {
+    fetchOrder();
+  }, [fetchOrder]);
 
   if (loading) {
     return <div className="loading">Loading order details...</div>;
@@ -76,7 +77,7 @@ const OrderSuccess = () => {
             </div>
             <div className="info-row">
               <span className="info-label">Total Amount:</span>
-              <span className="info-value total-amount">${order.total.toFixed(2)}</span>
+              <span className="info-value total-amount">₹{order.total.toFixed(2)}</span>
             </div>
           </div>
 
@@ -90,7 +91,7 @@ const OrderSuccess = () => {
                       {item.productId?.name || 'Product'}
                     </span>
                     <span className="item-details">
-                      Qty: {item.quantity} × ${item.unitPrice.toFixed(2)} = ${item.lineTotal.toFixed(2)}
+                    Qty: {item.quantity} × ₹{item.unitPrice.toFixed(2)} = ₹{item.lineTotal.toFixed(2)}
                     </span>
                   </div>
                 ))}
