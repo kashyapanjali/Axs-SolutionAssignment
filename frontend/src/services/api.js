@@ -53,6 +53,8 @@ export const orderAPI = {
 	getAdminOrder: (id) => api.get(`/orders/admin/${id}`),
 	updateOrderStatus: (id, status) =>
 		api.patch(`/orders/admin/${id}/status`, { status }),
+	// ADD THIS FOR TRACKING BY NUMBER/EMAIL
+	trackOrder: (data) => api.post("/orders/track", data),
 };
 
 // Auth APIs
@@ -65,12 +67,6 @@ export const authAPI = {
 // Dashboard API
 export const dashboardAPI = {
 	getStats: () => api.get("/dashboard"),
-};
-
-//order tracking API for customers
-export const trackOrderAPI = {
-	track: (orderId, contactNumber) =>
-		api.get(`/orders/track?orderId=${orderId}&contactNumber=${contactNumber}`),
 };
 
 export default api;

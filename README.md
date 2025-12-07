@@ -1,11 +1,10 @@
-
 # Full-Stack Retail Storefront & Admin Portal
 
 A complete **Full-Stack Retail Web Application** built using **React (Frontend)**, **Node.js + Express (Backend)**, and **MongoDB (Database)**.
 This project includes:
 
-* **Customer Storefront** for browsing products, cart, and placing orders
-* **Admin Portal** for managing products and orders securely
+- **Customer Storefront** for browsing products, cart, and placing orders
+- **Admin Portal** for managing products and orders securely
 
 ---
 
@@ -13,34 +12,36 @@ This project includes:
 
 ### Customer Storefront
 
-* View active products only
-* Product search & category filter
-* Product details with stock control
-* Add to cart / update quantity / remove from cart
-* Cart summary with **Subtotal, Tax (10%), and Total**
-* Checkout with customer details
-* Order placed successfully with Order ID
-* Cart stored in **localStorage**
+- View active products only
+- Product search & category filter
+- Product details with stock control
+- Add to cart / update quantity / remove from cart
+- Cart summary with **Subtotal, Tax (10%), and Total**
+- Checkout with customer details
+- Order placed successfully with Order ID
+- Cart stored in **localStorage**
 
 ### Admin Portal (Protected)
 
-* Secure Admin Login with JWT Authentication
-* Product Management:
+- Secure Admin Login with JWT Authentication
+- Product Management:
 
-  * Create / Edit / Delete Products
-  * Upload product image (JPG/PNG ≤ 2MB)
-  * Activate / Deactivate Product
-* Order Management:
+  - Create / Edit / Delete Products
+  - Upload product image (JPG/PNG ≤ 2MB)
+  - Activate / Deactivate Product
 
-  * View all orders
-  * Filter by status & date
-  * View order details
-  * Update order status (New → Processing → Shipped → Cancelled)
-* Dashboard:
+- Order Management:
 
-  * Today’s orders
-  * Total revenue
-  * Low stock products
+  - View all orders
+  - Filter by status & date
+  - View order details
+  - Update order status (New → Processing → Shipped → Cancelled)
+
+- Dashboard:
+
+  - Today’s orders
+  - Total revenue
+  - Low stock products
 
 ---
 
@@ -70,7 +71,7 @@ root/
  │   ├── uploads/
  │   ├── scripts/seed.js
  │   └── index.js
- |   └── .env    
+ |   └── .env
  │
  ├── frontend/
  │   ├── src/
@@ -126,14 +127,13 @@ npm run dev
 ### 2. Seed Admin & Products
 
 ```bash
-node seed.js
 npm run seed
 ```
 
 This will insert:
 
-* Default Admin User
-* 8+ Sample Products
+- Default Admin User
+- 8+ Sample Products
 
 ---
 
@@ -160,41 +160,43 @@ Password: admin123
 
 ### Product
 
-* id, name, description, price, stock, category, status, imageUrl, createdAt, updatedAt
+- id, name, description, price, stock, category, status, imageUrl, createdAt, updatedAt
 
 ### Order
 
-* id, customerName, email, contactNumber, shippingAddress, status, total, createdAt
+- id, customerName, email, contactNumber, shippingAddress, status, total, createdAt
 
 ### OrderItem
 
-* id, orderId, productId, quantity, unitPrice, lineTotal
+- id, orderId, productId, quantity, unitPrice, lineTotal
 
 ### AdminUser
 
-* id, email, password (hashed), role
+- id, email, password (hashed), role
 
 ---
 
 ## API Features
 
-* Admin Authentication with JWT
-* Product APIs (customer & admin)
-* Order APIs (customer & admin)
-* Image Upload with Validation
-* Server-Side Input Validation
-* Central Error Handler
+- Admin Authentication with JWT
+- Protected admin routes
+- Passwords hashed using bcrypt
+- Product APIs (customer & admin)
+- Order APIs (customer & admin)
+- Image Upload with Validation
+- Server-Side Input Validation
+- Central Error Handler
 
 ---
 
 ## Key Functional Rules Implemented
 
-* Only **Active products visible to customers**
-* Product **stock decreases on order**
-* Customer **cannot add beyond stock**
-* Checkout **form validation**
-* Admin **route protection**
-* Order **status updates reflected immediately**
+- Only **Active products visible to customers**
+- Product **stock decreases on order**
+- Customer **cannot add beyond stock**
+- Checkout **form validation**
+- Admin **route protection**
+- Order **status updates reflected immediately**
 
 ---
 
@@ -208,9 +210,9 @@ This is exactly as per the assignment scope.
 
 ## Why Seed Data Exists When Products Can Be Added from Admin?
 
-* For **quick testing**
-* For **project reviewers**
-* For **initial categories**
+- For **quick testing**
+- For **project reviewers**
+- For **initial categories**
 
 Admin panel can still be used for real product management.
 
@@ -220,30 +222,90 @@ Admin panel can still be used for real product management.
 
 For Customer Home Page:
 
-* **"Explore Our Products"**
-* **"Trending Items"**
-* **"Shop the Best Deals"**
-* **"New Arrivals"**
+- **"Explore Our Products"**
+- **"Trending Items"**
+- **"Shop the Best Deals"**
+- **"New Arrivals"**
 
 ---
 
+## Extra Feature (Bonus)
+
+● Customer can track their order using:
+
+- Mobile Number OR
+- Email ID  
+  (No login required)
+
+Route used:
+POST /api/orders/track
+
+## Application URLs (Local)
+
+Customer Storefront:
+http://localhost:3000
+
+Admin Portal:
+http://localhost:3000/admin
+
+Backend API:
+http://localhost:5000/api
+
 ## Demo & Recording
 
-* Screen recording or GIF of:
+- Screen recording or GIF of:
 
-  * Customer order flow
-  * Admin product creation
-  * Order status update
+  - Customer order flow
+  - Admin product creation
+  - Order status update
+
+---
+
+## Screenshots
+
+### Customer Home Page
+
+![Home Page](./screenshots/home.png)
+
+### Cart Page
+
+![Cart](./screenshots/cart.png)
+
+### Checkout Page
+
+![Checkout](./screenshots/checkout.png)
+
+### Order track page
+
+![Order Track](./screenshots/track.png)
+
+---
+
+### Admin Login
+
+![Admin Login](./screenshots/admin-login.png)
+
+### Admin Dashboard
+
+![Admin Dashboard](./screenshots/admin-dashboard.png)
+
+### Product Management (Admin)
+
+![Admin Products](./screenshots/admin-products.png)
+
+### Order Management (Admin)
+
+![Admin Orders](./screenshots/admin-order.png)
 
 ---
 
 ## Final Notes
 
-* Currency is in **₹ INR**
-* Cart persists on refresh
-* Orders are stored in MongoDB
-* Fully responsive design
-* Clean MVC-style backend structure
+- Currency is in **₹ INR**
+- Cart persists on refresh
+- Orders are stored in MongoDB
+- Fully responsive design
+- Clean MVC-style backend structure
 
 ---
 

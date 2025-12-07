@@ -1,23 +1,22 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "./TrackOrder.css";
+import { orderAPI } from "../../services/api";
+
 const TrackOrder = () => {
 	const [input, setInput] = useState("");
 	const [orders, setOrders] = useState([]);
 	const [error, setError] = useState("");
 
+	//call api to track order
 	const handleTrack = async () => {
 		setError("");
 		setOrders([]);
 
 		try {
-			const response = await axios.post(
-				"http://localhost:5000/api/orders/track",
-				{
-					contactNumber: input, // OR email also works
-					email: input,
-				}
-			);
+			const response = await orderAPI.trackOrder({
+				contactNumber: input,
+				email: input,
+			});
 
 			setOrders(response.data.orders);
 		} catch (err) {
