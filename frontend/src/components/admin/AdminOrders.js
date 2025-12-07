@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { orderAPI } from '../../services/api';
 import './AdminOrders.css';
@@ -14,11 +14,7 @@ const AdminOrders = () => {
     endDate: '',
   });
 
-  useEffect(() => {
-    fetchOrders();
-  }, [currentPage, filters]);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     setLoading(true);
     try {
       const params = { page: currentPage, limit: 12, ...filters };
@@ -30,7 +26,11 @@ const AdminOrders = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, filters]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   const getStatusClass = (status) => {
     return `status-badge status-${status.toLowerCase()}`;
@@ -112,7 +112,7 @@ const AdminOrders = () => {
                       <td className="order-id">{order._id.substring(0, 8)}...</td>
                       <td>{order.customerName}</td>
                       <td>{order.email}</td>
-                      <td>${order.total.toFixed(2)}</td>
+                      <td>₹{order.total.toFixed(2)}</td>
                       <td>
                         <span className={getStatusClass(order.status)}>
                           {order.status}

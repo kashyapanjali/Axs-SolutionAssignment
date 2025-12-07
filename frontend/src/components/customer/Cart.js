@@ -49,7 +49,7 @@ const Cart = () => {
                 <div className="item-details">
                   <h3>{item.product.name}</h3>
                   <p className="item-category">{item.product.category}</p>
-                  <p className="item-price">${item.product.price.toFixed(2)}</p>
+                  <p className="item-price">₹{item.product.price.toFixed(2)}</p>
                 </div>
                 <div className="item-quantity">
                   <button
@@ -68,7 +68,7 @@ const Cart = () => {
                   </button>
                 </div>
                 <div className="item-total">
-                  <p className="total-price">${(item.product.price * item.quantity).toFixed(2)}</p>
+                  <p className="total-price">₹{(item.product.price * item.quantity).toFixed(2)}</p>
                 </div>
                 <button
                   onClick={() => removeFromCart(item.product._id)}
@@ -83,15 +83,15 @@ const Cart = () => {
             <h2>Order Summary</h2>
             <div className="summary-row">
               <span>Subtotal:</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>₹{subtotal.toFixed(2)}</span>
             </div>
             <div className="summary-row">
               <span>Tax (10%):</span>
-              <span>${tax.toFixed(2)}</span>
+              <span>₹{tax.toFixed(2)}</span>
             </div>
             <div className="summary-row total-row">
               <span>Total:</span>
-              <span>${total.toFixed(2)}</span>
+              <span>₹{total.toFixed(2)}</span>
             </div>
             <button onClick={() => navigate('/checkout')} className="checkout-btn">
               Proceed to Checkout

@@ -43,7 +43,7 @@ const AdminDashboard = () => {
             <div className="stat-icon today-revenue">💰</div>
             <div className="stat-content">
               <h3>Today's Revenue</h3>
-              <p className="stat-value">${stats?.todayRevenue?.toFixed(2) || '0.00'}</p>
+              <p className="stat-value">₹{stats?.todayRevenue?.toFixed(2) || '0.00'}</p>
             </div>
           </div>
 
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
             <div className="stat-icon total-revenue">💵</div>
             <div className="stat-content">
               <h3>Total Revenue</h3>
-              <p className="stat-value">${stats?.totalRevenue?.toFixed(2) || '0.00'}</p>
+              <p className="stat-value">₹{stats?.totalRevenue?.toFixed(2) || '0.00'}</p>
             </div>
           </div>
 

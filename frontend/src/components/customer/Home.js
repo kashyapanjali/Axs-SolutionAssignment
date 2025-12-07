@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { productAPI } from '../../services/api';
 import { getImageUrl } from '../../utils/imageHelper';
 import './Home.css';
+
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -13,24 +14,22 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [searchTerm, selectedCategory, currentPage]);
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const response = await productAPI.getCategories();
       setCategories(response.data.categories);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
-  };
+  }, []);
+  
 
-  const fetchProducts = async () => {
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
       const params = {
@@ -39,7 +38,7 @@ const Home = () => {
       };
       if (searchTerm) params.search = searchTerm;
       if (selectedCategory) params.category = selectedCategory;
-
+  
       const response = await productAPI.getProducts(params);
       setProducts(response.data.products);
       setTotalPages(response.data.totalPages);
@@ -48,7 +47,13 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchTerm, selectedCategory, currentPage]);
+  
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+  
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -65,7 +70,7 @@ const Home = () => {
     <div className="home-container">
       <div className="container">
         <div className="hero-section">
-          <h1>Welcome to Our Store</h1>
+          <h1>Shop the Latest Store</h1>
           <p>Discover amazing products at great prices</p>
         </div>
 
@@ -128,7 +133,7 @@ const Home = () => {
                       <h3 className="product-name">{product.name}</h3>
                       <p className="product-category">{product.category}</p>
                       <div className="product-footer">
-                        <span className="product-price">${product.price.toFixed(2)}</span>
+                        <span className="product-price">₹{product.price.toFixed(2)}</span>
                         <span className="product-stock">
                           {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
                         </span>

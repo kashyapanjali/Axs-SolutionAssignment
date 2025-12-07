@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { orderAPI } from '../../services/api';
 import { getImageUrl } from '../../utils/imageHelper';
@@ -11,11 +11,7 @@ const AdminOrderDetail = () => {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
 
-  useEffect(() => {
-    fetchOrder();
-  }, [id]);
-
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     try {
       const response = await orderAPI.getAdminOrder(id);
       setOrder(response.data.order);
@@ -24,7 +20,11 @@ const AdminOrderDetail = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchOrder();
+  }, [fetchOrder]);
 
   const handleStatusUpdate = async (newStatus) => {
     if (!window.confirm(`Are you sure you want to change order status to ${newStatus}?`)) {
@@ -86,7 +86,7 @@ const AdminOrderDetail = () => {
                 </div>
                 <div className="info-item">
                   <span className="info-label">Total Amount:</span>
-                  <span className="info-value total-amount">${order.total.toFixed(2)}</span>
+                  <span className="info-value total-amount">₹{order.total.toFixed(2)}</span>
                 </div>
                 <div className="info-item">
                   <span className="info-label">Order Date:</span>
@@ -158,7 +158,7 @@ const AdminOrderDetail = () => {
                     <div className="item-details">
                       <h3>{item.productId?.name || 'Product'}</h3>
                       <p className="item-meta">
-                        Quantity: {item.quantity} × ${item.unitPrice.toFixed(2)} = ${item.lineTotal.toFixed(2)}
+                        Quantity: {item.quantity} × ₹{item.unitPrice.toFixed(2)} = ₹{item.lineTotal.toFixed(2)}
                       </p>
                       {item.productId?.stock !== undefined && (
                         <p className="item-stock">Stock: {item.productId.stock}</p>

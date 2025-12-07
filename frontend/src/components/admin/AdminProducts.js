@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { productAPI } from '../../services/api';
 import { getImageUrl } from '../../utils/imageHelper';
 import './AdminProducts.css';
@@ -21,11 +21,7 @@ const AdminProducts = () => {
     image: null,
   });
 
-  useEffect(() => {
-    fetchProducts();
-  }, [currentPage, filters]);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
       const params = { page: currentPage, limit: 12, ...filters };
@@ -37,7 +33,11 @@ const AdminProducts = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, filters]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -186,7 +186,7 @@ const AdminProducts = () => {
                       </td>
                       <td>{product.name}</td>
                       <td>{product.category}</td>
-                      <td>${product.price.toFixed(2)}</td>
+                      <td>₹{product.price.toFixed(2)}</td>
                       <td>{product.stock}</td>
                       <td>
                         <select
