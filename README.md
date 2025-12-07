@@ -295,7 +295,7 @@ http://localhost:5000/api
 
 ### Order Management (Admin)
 
-![Admin Orders](./screenshots/admin-order.png)
+![Admin Orders](./screenshots/admin-order-details.png)
 
 ---
 
