@@ -299,6 +299,18 @@ http://localhost:5000/api
 
 ---
 
+## Demo Video
+
+Click the link below to watch the full project walkthrough:
+
+## first Link
+
+https://drive.google.com/file/d/1L-apb6cbOJA2srdqhwPSwjIEHcdrLr6X/view?usp=drive_link
+
+## second Link
+
+https://drive.google.com/file/d/1_lhZegppy9zL-0KPTkZLUp_TLZ5keLXp/view?usp=drive_link
+
 ## Final Notes
 
 - Currency is in **₹ INR**
