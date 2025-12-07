@@ -5,7 +5,7 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    maxlength: 100
+    maxlength: 200
   },
   email: {
     type: String,
@@ -26,15 +26,15 @@ const orderSchema = new mongoose.Schema({
     trim: true,
     maxlength: 500
   },
-  status: {
-    type: String,
-    enum: ['New', 'Processing', 'Shipped', 'Cancelled'],
-    default: 'New'
-  },
   total: {
     type: Number,
     required: true,
     min: 0
+  },
+  status: {
+    type: String,
+    enum: ['New', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
+    default: 'New'
   },
   createdAt: {
     type: Date,
@@ -46,10 +46,8 @@ const orderSchema = new mongoose.Schema({
   }
 });
 
-orderSchema.pre('save', function(next) {
+orderSchema.pre('save', function() {
   this.updatedAt = Date.now();
-  next();
 });
 
 module.exports = mongoose.model('Order', orderSchema);
-

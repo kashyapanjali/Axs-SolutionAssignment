@@ -42,6 +42,7 @@ app.get('/', (req, res) => {
 // Error handler (must be last)
 app.use(errorHandler);
 
+//port
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {

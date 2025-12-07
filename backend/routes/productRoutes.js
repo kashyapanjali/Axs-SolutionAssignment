@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const multer = require('multer');
 const Product = require('../models/Product');
 const authMiddleware = require('../middleware/auth');
 const { validateProduct } = require('../middleware/validation');
 const upload = require('../middleware/upload');
+
 
 // Customer routes - Get all active products
 router.get('/customer', async (req, res) => {
@@ -43,6 +45,7 @@ router.get('/customer', async (req, res) => {
   }
 });
 
+
 // Customer route - Get single product
 router.get('/customer/:id', async (req, res) => {
   try {
@@ -55,6 +58,7 @@ router.get('/customer/:id', async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
+
 
 // Admin routes - Get all products
 router.get('/admin', authMiddleware, async (req, res) => {
@@ -85,6 +89,7 @@ router.get('/admin', authMiddleware, async (req, res) => {
   }
 });
 
+
 // Admin route - Get single product
 router.get('/admin/:id', authMiddleware, async (req, res) => {
   try {
@@ -99,27 +104,94 @@ router.get('/admin/:id', authMiddleware, async (req, res) => {
 });
 
 // Admin route - Create product
-router.post('/admin', authMiddleware, upload.single('image'), validateProduct, async (req, res) => {
-  try {
-    const productData = { ...req.body };
+router.post('/admin', authMiddleware, (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return res.status(400).json({ success: false, message: 'File size too large. Maximum 2MB allowed.' });
+        }
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(400).json({ success: false, message: err.message });
+    }
+    next();
+  });
+}, validateProduct, async (req, res) => {
+  try {    
+    const productData = {
+      name: req.body.name?.trim() || '',
+      description: req.body.description?.trim() || '',
+      price: parseFloat(req.body.price),
+      stock: parseInt(req.body.stock),
+      category: req.body.category?.trim() || '',
+      status: req.body.status || 'Active',
+    };
+    
+    // Validate required fields
+    if (!productData.name) {
+      return res.status(400).json({ success: false, message: 'Product name is required' });
+    }
+    if (!productData.description) {
+      return res.status(400).json({ success: false, message: 'Product description is required' });
+    }
+    if (isNaN(productData.price) || productData.price < 0) {
+      return res.status(400).json({ success: false, message: 'Valid price is required' });
+    }
+    if (isNaN(productData.stock) || productData.stock < 0) {
+      return res.status(400).json({ success: false, message: 'Valid stock is required' });
+    }
+    if (!productData.category) {
+      return res.status(400).json({ success: false, message: 'Product category is required' });
+    }
+    
     if (req.file) {
       productData.imageUrl = `/uploads/${req.file.filename}`;
     }
+    
     const product = new Product(productData);
     await product.save();
     res.status(201).json({ success: true, product });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error('Error creating product - Full error:', error);
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || 'Error creating product',
+      error: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 
 // Admin route - Update product
-router.put('/admin/:id', authMiddleware, upload.single('image'), validateProduct, async (req, res) => {
+router.put('/admin/:id', authMiddleware, (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return res.status(400).json({ success: false, message: 'File size too large. Maximum 2MB allowed.' });
+        }
+        return res.status(400).json({ success: false, message: err.message });
+      }
+      return res.status(400).json({ success: false, message: err.message });
+    }
+    next();
+  });
+}, validateProduct, async (req, res) => {
   try {
-    const productData = { ...req.body };
+    const productData = {
+      name: req.body.name,
+      description: req.body.description || '',
+      price: parseFloat(req.body.price),
+      stock: parseInt(req.body.stock),
+      category: req.body.category,
+      status: req.body.status || 'Active',
+    };
+    
     if (req.file) {
       productData.imageUrl = `/uploads/${req.file.filename}`;
     }
+    
     const product = await Product.findByIdAndUpdate(
       req.params.id,
       productData,
@@ -130,7 +202,8 @@ router.put('/admin/:id', authMiddleware, upload.single('image'), validateProduct
     }
     res.json({ success: true, product });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error('Error updating product:', error);
+    res.status(500).json({ success: false, message: error.message || 'Error updating product' });
   }
 });
 
@@ -177,6 +250,7 @@ router.get('/categories', async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
+
 
 module.exports = router;
 

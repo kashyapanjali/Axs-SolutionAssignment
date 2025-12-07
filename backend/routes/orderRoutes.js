@@ -6,10 +6,51 @@ const Product = require('../models/Product');
 const authMiddleware = require('../middleware/auth');
 const { validateOrder, validateOrderStatus } = require('../middleware/validation');
 
+// Async handler wrapper to catch errors
+const asyncHandler = (fn) => {
+  return (req, res, next) => {
+    try {
+      const result = Promise.resolve(fn(req, res, next));
+      if (result && typeof result.catch === 'function') {
+        result.catch((err) => {
+          console.error('AsyncHandler caught error:', err);
+          if (typeof next === 'function') {
+            next(err);
+          } else {
+            console.error('next is not a function!', typeof next);
+            res.status(500).json({ 
+              success: false, 
+              message: 'Internal server error: next is not a function' 
+            });
+          }
+        });
+      }
+    } catch (err) {
+      console.error('AsyncHandler sync error:', err);
+      if (typeof next === 'function') {
+        next(err);
+      } else {
+        console.error('next is not a function!', typeof next);
+        res.status(500).json({ 
+          success: false, 
+          message: 'Internal server error: next is not a function' 
+        });
+      }
+    }
+  };
+};
+
 // Customer route - Create order
-router.post('/customer', validateOrder, async (req, res) => {
-  try {
+router.post('/customer', validateOrder, asyncHandler(async (req, res, next) => {
+  try {    
     const { customerName, email, contactNumber, shippingAddress, items } = req.body;
+    
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Order must contain at least one item' 
+      });
+    }
 
     // Calculate total and validate stock
     let total = 0;
@@ -85,7 +126,6 @@ router.post('/customer', validateOrder, async (req, res) => {
     const populatedOrder = await Order.findById(order._id);
     const orderItemsData = await OrderItem.find({ orderId: order._id })
       .populate('productId', 'name imageUrl');
-
     res.status(201).json({
       success: true,
       order: {
@@ -94,9 +134,14 @@ router.post('/customer', validateOrder, async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error('=== ERROR IN ORDER CREATION ===');
+    console.error('Error name:', error?.name);
+    console.error('Error message:', error?.message);
+    console.error('Error stack:', error?.stack);
+    console.error('Full error:', error);
+    throw error; // Let asyncHandler catch it and pass to next
   }
-});
+}));
 
 // Customer route - Get order by ID
 router.get('/customer/:id', async (req, res) => {
