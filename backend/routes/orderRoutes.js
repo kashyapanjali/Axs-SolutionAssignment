@@ -303,4 +303,43 @@ router.patch(
 	}
 );
 
+// PUBLIC TRACK ORDER (No Auth Required)
+router.post("/track", async (req, res) => {
+	try {
+		const { contactNumber, email } = req.body;
+
+		if (!contactNumber && !email) {
+			return res.status(400).json({
+				success: false,
+				message: "Mobile number or email is required",
+			});
+		}
+
+		const orders = await Order.find({
+			$or: [
+				contactNumber ? { contactNumber } : null,
+				email ? { email } : null,
+			].filter(Boolean),
+		}).sort({ createdAt: -1 });
+
+		if (orders.length === 0) {
+			return res.status(404).json({
+				success: false,
+				message: "No order found with this number or email",
+			});
+		}
+
+		res.json({
+			success: true,
+			orders,
+		});
+	} catch (error) {
+		console.error("Track Order Error:", error);
+		res.status(500).json({
+			success: false,
+			message: "Server error while tracking order",
+		});
+	}
+});
+
 module.exports = router;
